@@ -9,9 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(collectionOperations: ["post"], itemOperations: ["get", "put", "delete"])]
+#[ApiResource(collectionOperations: ["post"], itemOperations: ["get", "put", "delete"], normalizationContext: ['groups' => ['read']], denormalizationContext: ['groups' => ['write']])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,27 +21,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups("read", "write")]
     private $email;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Groups("read", "write")]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups("read", "write")]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups("read", "write")]
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 25, nullable: true)]
+    #[Groups("read", "write")]
     private $phone;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups("read", "write")]
     private $address;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups("read", "write")]
     private $description;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Like::class)]
@@ -53,9 +61,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $messages;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups("read", "write")]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups("read", "write")]
     private $job;
 
     public function __construct()
