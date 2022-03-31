@@ -20,11 +20,11 @@ class Message
     private $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $image;
 
     #[ORM\Column(type: 'text')]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $content;
 
     #[ORM\OneToMany(mappedBy: 'message', targetEntity: Like::class)]
@@ -37,7 +37,7 @@ class Message
     private $media;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $count_like;
 
     #[ORM\Column(type: 'datetime')]
@@ -50,7 +50,7 @@ class Message
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $user;
 
     public function __construct()

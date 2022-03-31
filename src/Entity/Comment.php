@@ -18,17 +18,17 @@ class Comment
     private $id;
 
     #[ORM\Column(type: 'text')]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $content;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $user;
 
     #[ORM\ManyToOne(targetEntity: Message::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups("read", "write")]
+    #[Groups(["read", "write"])]
     private $message;
 
     #[ORM\Column(type: 'datetime')]
