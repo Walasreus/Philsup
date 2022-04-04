@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Service\FileUploader;
 
 class UserDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -30,6 +31,14 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
             $data->setPassword($this->passwordHasher->hashPassword($data, $data->getPlainPassword()));
 
             $data->eraseCredentials();
+        }
+
+        if ($data->getPhone())
+        {
+            $phoneNumberUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+
+            $phoneNumberObject = $phoneNumberUtil->parse($data->getPhone(), 'FR');
+            $data->setPhone($phoneNumberUtil->format($phoneNumberObject, \libphonenumber\PhoneNumberFormat::NATIONAL));
         }
         
         $this->entityManager->persist($data);

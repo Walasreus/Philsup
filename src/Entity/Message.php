@@ -11,46 +11,49 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ApiResource(collectionOperations: ["get", "post"], itemOperations: ["put", "delete"], normalizationContext: ['groups' => ['read']], denormalizationContext: ['groups' => ['write']])]
+#[ApiResource(collectionOperations: ["get", "post"], itemOperations: ["put", "delete"], normalizationContext: ['groups' => ['message:read']], denormalizationContext: ['groups' => ['write']])]
+
 class Message
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["message:read", "comment:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["read", "write"])]
+    #[Groups(["message:read", "write"])]
     private $image;
 
     #[ORM\Column(type: 'text')]
-    #[Groups(["read", "write"])]
+    #[Groups(["message:read", "write"])]
     private $content;
 
     #[ORM\OneToMany(mappedBy: 'message', targetEntity: Like::class)]
     private $likes;
 
     #[ORM\OneToMany(mappedBy: 'message', targetEntity: Comment::class)]
+    #[Groups("message:read")]
     private $comments;
 
     #[ORM\OneToMany(mappedBy: 'message', targetEntity: Media::class)]
     private $media;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["read", "write"])]
+    #[Groups(["message:read", "write"])]
     private $count_like;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups("read")]
+    #[Groups("message:read")]
     private $created_at;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    #[Groups("read")]
+    #[Groups("message:read")]
     private $updated_at;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["read", "write"])]
+    #[Groups(["message:read", "write"])]
     private $user;
 
     public function __construct()
@@ -112,7 +115,7 @@ class Message
     public function removeLike(Like $like): self
     {
         if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless almessage:ready changed)
             if ($like->getMessage() === $this) {
                 $like->setMessage(null);
             }
@@ -142,7 +145,7 @@ class Message
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless almessage:ready changed)
             if ($comment->getMessage() === $this) {
                 $comment->setMessage(null);
             }
@@ -172,7 +175,7 @@ class Message
     public function removeMedium(Media $medium): self
     {
         if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null (unless almessage:ready changed)
             if ($medium->getMessage() === $this) {
                 $medium->setMessage(null);
             }
